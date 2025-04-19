@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic Tac Toe</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      text-align: center;
+      width: 80%;
+      max-width: 400px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      background: #4caf50;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 1rem;
+    }
+
+    .btn:hover {
+      background: #45a049;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .player-info {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+      gap: 20px;
+    }
+
+    .player-info div {
+      flex: 1;
+    }
+
+    .player-info input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 20px auto;
+      width: 100%;
+      max-width: 300px;
+    }
+
+    .cell {
+      aspect-ratio: 1;
+      background: #e0e0e0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2rem;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background 0.3s ease;
+      min-width: 0;
+    }
+
+    .cell:hover {
+      background: #d1d1d1;
+    }
+
+    .turn-indicator {
+      margin-bottom: 20px;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    /* Responsive styles */
+    @media (max-width: 600px) {
+      .container {
+        width: 95%;
+        padding: 15px;
+      }
+
+      .player-info {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .player-info div {
+        width: 100%;
+      }
+
+      .player-info input {
+        margin: 5px 0;
+      }
+
+      .board {
+        max-width: 100%;
+      }
+
+      .cell {
+        font-size: 1.5rem;
+      }
+
+      .turn-indicator {
+        font-size: 1rem;
+      }
+
+      .btn {
+        padding: 10px;
+        font-size: 0.9rem;
+      }
+    }
+    #ad-overlay {
+      height: 290px;
+      width: 300px;
+      position: absolute;
+      background-color: rgb(170, 167, 167);
+      margin: auto;
+      display: none;
+
+      #close-start-btn {
+        position: absolute;
+        right: 0;
+        top: 0;
+        height: 20px;
+        aspect-ratio: 1/1;
+      }
+
+      p {
+        color: #000000;
+        font-size: 13px;
+        position: absolute;
+        bottom: 0px;
+        left: 0;
+        padding: 5px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Remaining HTML structure remains the same as original -->
+  <div class="container">
+    <!-- Main Menu -->
+    <div id="mainMenu">
+      <h1>Welcome to Tic Tac Toe</h1>
+      <div class="menu">
+        <button id="playButton" class="btn">Start Game</button>
+        <button id="howToPlayButton" class="btn">How to Play</button>
+      </div>
+    </div>
+
+    <!-- How to Play Section -->
+    <div id="howToPlaySection" class="hidden">
+      <h2>How to Play</h2>
+      <p>1. Enter names for Player 1 (X) and Player 2 (O).</p>
+      <p>2. Click on the grid cells to place your mark.</p>
+      <p>3. The first player to align 3 marks wins.</p>
+      <p>4. Click "Restart" to play again after the game ends.</p>
+      <button id="backToMenuButton" class="btn">Back to Menu</button>
+    </div>
+
+    <!-- Game Section -->
+    <div id="gameSection" class="hidden">
+      <h1>Tic Tac Toe</h1>
+      <div class="player-info">
+        <div>
+          <label for="player1">Player 1 (X):</label>
+          <input type="text" id="player1" placeholder="Enter Name" value="Player 1">
+        </div>
+        <div>
+          <label for="player2">Player 2 (O):</label>
+          <input type="text" id="player2" placeholder="Enter Name" value="Player 2">
+        </div>
+      </div>
+      <div class="turn-indicator">
+        <span id="currentTurn">Player 1's Turn</span>
+      </div>
+      <div class="board">
+        <div class="cell" data-index="0"></div>
+        <div class="cell" data-index="1"></div>
+        <div class="cell" data-index="2"></div>
+        <div class="cell" data-index="3"></div>
+        <div class="cell" data-index="4"></div>
+        <div class="cell" data-index="5"></div>
+        <div class="cell" data-index="6"></div>
+        <div class="cell" data-index="7"></div>
+        <div class="cell" data-index="8"></div>
+      </div>
+      <button id="restartButton" class="btn hidden">Restart</button>
+      <button id="backToMenuFromGameButton" class="btn hidden">Back to Menu</button>
+    </div>
+  </div>
+  <div id="ad-overlay">
+    <button id="close-start-btn">X</button>
+    <p>Visiting this small ad helps us to grow and update. Thanks for your support! 💖</p>
+    <script type="text/javascript">
+	atOptions = {
+		'key' : 'd1ab09c01ab2e203e3236993dd511f73',
+		'format' : 'iframe',
+		'height' : 250,
+		'width' : 300,
+		'params' : {}
+	};
+</script>
+<script type="text/javascript" src="//www.highperformanceformat.com/d1ab09c01ab2e203e3236993dd511f73/invoke.js"></script>
+  </div>
+
+  <script>
+    // JavaScript code remains the same as original
+    const mainMenu = document.getElementById('mainMenu');
+    const gameSection = document.getElementById('gameSection');
+    const howToPlaySection = document.getElementById('howToPlaySection');
+    const playButton = document.getElementById('playButton');
+    const howToPlayButton = document.getElementById('howToPlayButton');
+    const backToMenuButton = document.getElementById('backToMenuButton');
+    const backToMenuFromGameButton = document.getElementById('backToMenuFromGameButton');
+
+    const board = document.querySelector('.board');
+    const cells = document.querySelectorAll('.cell');
+    const turnIndicator = document.getElementById('currentTurn');
+    const restartButton = document.getElementById('restartButton');
+    const adOverlay = document.getElementById('ad-overlay');
+    const closeBtn = document.getElementById('close-start-btn');                      4
+
+    let currentPlayer = 'X';
+    let player1Name = 'Player 1';
+    let player2Name = 'Player 2';
+    let gameState = ['', '', '', '', '', '', '', '', ''];
+    const winningConditions = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8],
+      [0, 3, 6], [1, 4, 7], [2, 5, 8],
+      [0, 4, 8], [2, 4, 6]
+    ];
+
+    function updateTurnIndicator() {
+      turnIndicator.textContent = `${currentPlayer === 'X' ? player1Name : player2Name}'s Turn`;
+    }
+
+    function handleCellClick(event) {
+      const cell = event.target;
+      const index = cell.getAttribute('data-index');
+
+      if (gameState[index] || checkWinner()) return;
+
+      gameState[index] = currentPlayer;
+      cell.textContent = currentPlayer;
+      cell.style.color = currentPlayer === 'X' ? '#e74c3c' : '#2980b9';
+
+      if (checkWinner()) {
+        turnIndicator.textContent = `${currentPlayer === 'X' ? player1Name : player2Name} Wins! 🎉`;
+        restartButton.classList.remove('hidden');
+        backToMenuFromGameButton.classList.remove('hidden');
+        return;
+      }
+
+      if (!gameState.includes('')) {
+        turnIndicator.textContent = "It's a Draw!";
+        restartButton.classList.remove('hidden');
+        backToMenuFromGameButton.classList.remove('hidden');
+        return;
+      }
+
+      currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+      updateTurnIndicator();
+    }
+
+    function checkWinner() {
+      return winningConditions.some(condition => {
+        return condition.every(index => gameState[index] === currentPlayer);
+      });
+    }
+
+    function restartGame() {
+      // gameState = ['', '', '', '', '', '', '', '', ''];
+      // currentPlayer = 'X';
+      // cells.forEach(cell => {
+      //   cell.textContent = '';
+      //   cell.style.color = '';
+      // });
+      // restartButton.classList.add('hidden');
+      // backToMenuFromGameButton.classList.add('hidden');
+      // updateTurnIndicator();
+      adOverlay.style.display = 'block';
+    }
+
+    function realRestartGame() {
+      gameState = ['', '', '', '', '', '', '', '', ''];
+      currentPlayer = 'X';
+      cells.forEach(cell => {
+        cell.textContent = '';
+        cell.style.color = '';
+      });
+      restartButton.classList.add('hidden');
+      backToMenuFromGameButton.classList.add('hidden');
+      updateTurnIndicator();
+      adOverlay.style.display = 'none';
+    }
+
+    function showGameSection() {
+      mainMenu.classList.add('hidden');
+      gameSection.classList.remove('hidden');
+      updateTurnIndicator();
+    }
+
+    function showHowToPlay() {
+      mainMenu.classList.add('hidden');
+      howToPlaySection.classList.remove('hidden');
+    }
+
+    function hideHowToPlay() {
+      howToPlaySection.classList.add('hidden');
+      mainMenu.classList.remove('hidden');
+    }
+
+    function backToMenuFromGame() {
+      gameSection.classList.add('hidden');
+      mainMenu.classList.remove('hidden');
+      restartGame();
+    }
+
+    playButton.addEventListener('click', showGameSection);
+    howToPlayButton.addEventListener('click', showHowToPlay);
+    backToMenuButton.addEventListener('click', hideHowToPlay);
+    backToMenuFromGameButton.addEventListener('click', backToMenuFromGame);
+    restartButton.addEventListener('click', restartGame);
+    closeBtn.addEventListener('click', realRestartGame);
+    cells.forEach(cell => cell.addEventListener('click', handleCellClick));
+
+    document.getElementById('player1').addEventListener('input', (e) => {
+      player1Name = e.target.value || 'Player 1';
+      updateTurnIndicator();
+    });
+
+    document.getElementById('player2').addEventListener('input', (e) => {
+      player2Name = e.target.value || 'Player 2';
+      updateTurnIndicator();
+    });
+  </script>
+  <script type='text/javascript' src='//pl26425118.profitableratecpm.com/aa/1e/9f/aa1e9fb07fa2424a957a2ffc6cf38ef6.js'></script>
+</body>
+</html>
