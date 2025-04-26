@@ -41,6 +41,7 @@
       flex-direction: column;
       gap: 10px;
       margin-bottom: 20px;
+      align-items: center;
     }
 
     .btn {
@@ -52,6 +53,7 @@
       cursor: pointer;
       transition: all 0.3s ease;
       font-size: 1rem;
+      width: 200px;
     }
 
     .btn:hover {
@@ -205,11 +207,11 @@
       <div class="player-info">
         <div>
           <label for="player1">Player 1 (X):</label>
-          <input type="text" id="player1" placeholder="Enter Name" value="Player 1">
+          <input type="text" id="player1" placeholder="Player 1">
         </div>
         <div>
           <label for="player2">Player 2 (O):</label>
-          <input type="text" id="player2" placeholder="Enter Name" value="Player 2">
+          <input type="text" id="player2" placeholder="Player 2">
         </div>
       </div>
       <div class="turn-indicator">
@@ -276,6 +278,14 @@
       turnIndicator.textContent = `${currentPlayer === 'X' ? player1Name : player2Name}'s Turn`;
     }
 
+    // Add event listeners to clear placeholder on focus (click)
+document.getElementById('player1').addEventListener('focus', (e) => {
+  if (e.target.value === e.target.placeholder) e.target.value = '';
+});
+document.getElementById('player2').addEventListener('focus', (e) => {
+  if (e.target.value === e.target.placeholder) e.target.value = '';
+});
+
     function handleCellClick(event) {
       const cell = event.target;
       const index = cell.getAttribute('data-index');
@@ -311,30 +321,21 @@
     }
 
     function restartGame() {
-      // gameState = ['', '', '', '', '', '', '', '', ''];
-      // currentPlayer = 'X';
-      // cells.forEach(cell => {
-      //   cell.textContent = '';
-      //   cell.style.color = '';
-      // });
-      // restartButton.classList.add('hidden');
-      // backToMenuFromGameButton.classList.add('hidden');
-      // updateTurnIndicator();
       adOverlay.style.display = 'block';
     }
 
     function realRestartGame() {
-      gameState = ['', '', '', '', '', '', '', '', ''];
-      currentPlayer = 'X';
-      cells.forEach(cell => {
-        cell.textContent = '';
-        cell.style.color = '';
-      });
-      restartButton.classList.add('hidden');
-      backToMenuFromGameButton.classList.add('hidden');
-      updateTurnIndicator();
-      adOverlay.style.display = 'none';
-    }
+  gameState = ['', '', '', '', '', '', '', '', ''];
+  currentPlayer = Math.random() > 0.5 ? 'O' : 'X'; // Randomize first player
+  cells.forEach(cell => {
+    cell.textContent = '';
+    cell.style.color = '';
+  });
+  restartButton.classList.add('hidden');
+  backToMenuFromGameButton.classList.add('hidden');
+  updateTurnIndicator(); // Update turn indicator with randomized player
+  adOverlay.style.display = 'none';
+}
 
     function showGameSection() {
       mainMenu.classList.add('hidden');
